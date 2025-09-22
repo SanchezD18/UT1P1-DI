@@ -46,7 +46,20 @@ fun MenuPrincipal(navController : NavController, modifier: Modifier){
     } else {
         MenuPrincipalVertical(navController, modifier)
     }
+
 }
+@Composable
+fun NuevoUsuarioPrincipal(navController : NavController, modifier: Modifier){
+    val orientation = LocalConfiguration.current.orientation
+    if (orientation == ORIENTATION_LANDSCAPE) {
+        NuevoUsuarioHorizontal(navController, modifier)
+    } else {
+        NuevoUsuarioVertical(navController, modifier)
+    }
+
+}
+
+
 
 @Composable
 fun MenuPrincipalVertical(navController : NavController, modifier: Modifier){
@@ -95,70 +108,156 @@ fun MenuPrincipalHorizontal(navController : NavController, modifier: Modifier){
     }}
 
 @Composable
-fun NuevoUsuario(navController: NavController, modifier: Modifier){
-    Column (modifier.fillMaxSize(),
-    horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = Arrangement.spacedBy(20.dp)) {
+fun NuevoUsuarioVertical(navController: NavController, modifier: Modifier) {
+    Column(
+        modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
         Text(
             modifier = modifier,
             text = "Formulario",
             fontSize = 30.sp,
         )
-    Column {
-        Row {Column { Image(
-            painter = painterResource(id = R.drawable.account),
-            contentDescription = "Persona",
-            modifier = Modifier.requiredSize(80.dp)) }
-            Column { var estadoNombre by remember{mutableStateOf(" ") }
-                OutlinedTextField(
-                    value = estadoNombre,
-                    onValueChange = { estadoNombre = it },
-                    label = { Text(text = "Nombre") },
-                    modifier = Modifier.padding(10.dp))
-                var estadoApellido by remember{mutableStateOf(" ") }
-                OutlinedTextField(
-                    value = estadoApellido,
-                    onValueChange = { estadoApellido = it },
-                    label = { Text(text = "Nombre") },
-                    modifier = Modifier.padding(10.dp))
-                Row { Image(
-                    painter = painterResource(id = R.drawable.android),
-                    contentDescription = "Android",
-                    modifier = Modifier.requiredSize(80.dp))
-                    Spacer(modifier.height(10.dp).width(10.dp))
-                    Button(onClick = {}) { Text("Change")} }}
-        }
-        Row {
-            Column { Image(
-                painter = painterResource(id = R.drawable.camera),
-                contentDescription = "Camara",
-                modifier = Modifier.requiredSize(80.dp)
-            ) }
-            Column {
-                var estadoTelefono by remember{mutableStateOf(" ")}
-                OutlinedTextField(
-                value = estadoTelefono,
-                onValueChange = { estadoTelefono = it },
-                label = { Text(text = "Teléfono") },
-                modifier = Modifier.padding(10.dp)) }
-              }
-        Row {
-            Column { Image(
-                painter = painterResource(id = R.drawable.email),
-                contentDescription = "Carta",
-                modifier = Modifier.requiredSize(80.dp)
-            ) }
-            Column {
-                var estadoEmail by remember{mutableStateOf(" ")}
-                OutlinedTextField(
-                    value = estadoEmail,
-                    onValueChange = { estadoEmail = it },
-                    label = { Text(text = "Email")},
-                    modifier = Modifier.padding(10.dp),
-                    placeholder = {Text(text = "Alcachofa")}) }
+        Column {
+            Row {
+                Column {
+                    Image(
+                        painter = painterResource(id = R.drawable.account),
+                        contentDescription = "Persona",
+                        modifier = Modifier.requiredSize(80.dp)
+                    )
+                }
+                Column {
+                    var estadoNombre by remember { mutableStateOf(" ") }
+                    OutlinedTextField(
+                        value = estadoNombre,
+                        onValueChange = { estadoNombre = it },
+                        label = { Text(text = "Nombre") },
+                        modifier = Modifier.padding(10.dp)
+                    )
+                    var estadoApellido by remember { mutableStateOf(" ") }
+                    OutlinedTextField(
+                        value = estadoApellido,
+                        onValueChange = { estadoApellido = it },
+                        label = { Text(text = "Nombre") },
+                        modifier = Modifier.padding(10.dp)
+                    )
+                    Row {
+                        Image(
+                            painter = painterResource(id = R.drawable.android),
+                            contentDescription = "Android",
+                            modifier = Modifier.requiredSize(80.dp)
+                        )
+                        Spacer(modifier.height(10.dp).width(10.dp))
+                        Button(onClick = {}) { Text("Change") }
+                    }
+                }
+            }
+            Row {
+                Column {
+                    Image(
+                        painter = painterResource(id = R.drawable.camera),
+                        contentDescription = "Camara",
+                        modifier = Modifier.requiredSize(80.dp)
+                    )
+                }
+                Column {
+                    var estadoTelefono by remember { mutableStateOf(" ") }
+                    OutlinedTextField(
+                        value = estadoTelefono,
+                        onValueChange = { estadoTelefono = it },
+                        label = { Text(text = "Teléfono") },
+                        modifier = Modifier.padding(10.dp)
+                    )
+                }
+            }
+            Row {
+                Column {
+                    Image(
+                        painter = painterResource(id = R.drawable.email),
+                        contentDescription = "Carta",
+                        modifier = Modifier.requiredSize(80.dp)
+                    )
+                }
+                Column {
+                    var estadoEmail by remember { mutableStateOf(" ") }
+                    OutlinedTextField(
+                        value = estadoEmail,
+                        onValueChange = { estadoEmail = it },
+                        label = { Text(text = "Email") },
+                        modifier = Modifier.padding(10.dp),
+                        placeholder = { Text(text = "Alcachofa") })
+                }
+            }
         }
     }
-    }
+}
+    @Composable
+    fun NuevoUsuarioHorizontal(navController: NavController, modifier: Modifier){
+        Column(modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(20.dp)) {
+            Text(
+                modifier = modifier,
+                text = "Formulario",
+                fontSize = 30.sp,
+            )
+            Row {
+                Column {Row { Image(
+                    painter = painterResource(id = R.drawable.account),
+                    contentDescription = "Persona",
+                    modifier = Modifier.requiredSize(80.dp)) }
+                    Column { var estadoNombre by remember{mutableStateOf(" ") }
+                        OutlinedTextField(
+                            value = estadoNombre,
+                            onValueChange = { estadoNombre = it },
+                            label = { Text(text = "Nombre") },
+                            modifier = Modifier.padding(10.dp))
+                        var estadoApellido by remember{mutableStateOf(" ") }
+                        OutlinedTextField(
+                            value = estadoApellido,
+                            onValueChange = { estadoApellido = it },
+                            label = { Text(text = "Nombre") },
+                            modifier = Modifier.padding(10.dp))
+                        Column { Image(
+                            painter = painterResource(id = R.drawable.android),
+                            contentDescription = "Android",
+                            modifier = Modifier.requiredSize(80.dp))
+                            Spacer(modifier.height(10.dp).width(10.dp))
+                            Button(onClick = {}) { Text("Change")} }}
+                }
+                Column {
+                    Row { Image(
+                        painter = painterResource(id = R.drawable.camera),
+                        contentDescription = "Camara",
+                        modifier = Modifier.requiredSize(80.dp)
+                    ) }
+                    Row {
+                        var estadoTelefono by remember{mutableStateOf(" ")}
+                        OutlinedTextField(
+                            value = estadoTelefono,
+                            onValueChange = { estadoTelefono = it },
+                            label = { Text(text = "Teléfono") },
+                            modifier = Modifier.padding(10.dp)) }
+                }
+                Column {
+                    Row { Image(
+                        painter = painterResource(id = R.drawable.email),
+                        contentDescription = "Carta",
+                        modifier = Modifier.requiredSize(80.dp)
+                    ) }
+                    Row {
+                        var estadoEmail by remember{mutableStateOf(" ")}
+                        OutlinedTextField(
+                            value = estadoEmail,
+                            onValueChange = { estadoEmail = it },
+                            label = { Text(text = "Email")},
+                            modifier = Modifier.padding(10.dp),
+                            placeholder = {Text(text = "Alcachofa")}) }
+                }
+            }
+        }
 
     }
 

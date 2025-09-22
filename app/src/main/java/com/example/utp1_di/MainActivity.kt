@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable("NuevoUsuario") {
-                            NuevoUsuario(
+                            NuevoUsuarioPrincipal(
                                 navController,
                                 modifier = Modifier.padding(innerPadding)
                             )
