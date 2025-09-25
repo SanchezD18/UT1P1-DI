@@ -22,12 +22,19 @@ import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+
+val GoudyFont = FontFamily(Font(R.font.goudybookletter))
 
 @Composable
 fun FilledButtonExample(texto: String, onClick: () -> Unit) {
@@ -37,6 +44,13 @@ fun FilledButtonExample(texto: String, onClick: () -> Unit) {
         ) {
         Text(texto)
     }}
+
+@Composable
+fun OutlinedButtonExample(texto: String, onClick: () -> Unit) {
+    OutlinedButton(onClick = { onClick() }) {
+        Text(texto)
+    }
+}
 
 @Composable
 fun MenuPrincipal(navController : NavController, modifier: Modifier){
@@ -70,7 +84,8 @@ fun MenuPrincipalVertical(navController : NavController, modifier: Modifier){
         Text(
             modifier = modifier,
             text = "DaviTeca",
-            fontSize = 30.sp,
+            fontSize = 40.sp,
+            fontFamily = GoudyFont
         )
         Spacer(modifier.height(20.dp))
         FilledButtonExample("Libros") { }
@@ -96,12 +111,11 @@ fun MenuPrincipalHorizontal(navController : NavController, modifier: Modifier){
             Spacer(modifier = modifier
                 .width(10.dp))
             FilledButtonExample("Reseñas") { } }
-        Row(modifier = modifier) { FilledButtonExample("Búsqueda") { }
+        Row(modifier = modifier) { FilledButtonExample("Búsqueda") {}
             Spacer(modifier = modifier
                 .width(10.dp))
-            FilledButtonExample("Usuarios") { } }
-        Row(modifier = modifier) {
             FilledButtonExample("Nuevo Usuario") { navController.navigate("NuevoUsuario") }
+
         }
 
 
@@ -109,6 +123,13 @@ fun MenuPrincipalHorizontal(navController : NavController, modifier: Modifier){
 
 @Composable
 fun NuevoUsuarioVertical(navController: NavController, modifier: Modifier) {
+    var estadoNombre by remember { mutableStateOf(" ") }
+    var estadoApellido by remember { mutableStateOf(" ") }
+    var estadoNickname by remember { mutableStateOf(" ") }
+    var estadoTelefono by remember { mutableStateOf("") }
+    var estadoEmail by remember { mutableStateOf(" ") }
+    var mensajeError by remember { mutableStateOf(" ") }
+
     Column(
         modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -129,20 +150,41 @@ fun NuevoUsuarioVertical(navController: NavController, modifier: Modifier) {
                     )
                 }
                 Column {
-                    var estadoNombre by remember { mutableStateOf(" ") }
+
                     OutlinedTextField(
                         value = estadoNombre,
                         onValueChange = { estadoNombre = it },
                         label = { Text(text = "Nombre") },
                         modifier = Modifier.padding(10.dp)
                     )
-                    var estadoApellido by remember { mutableStateOf(" ") }
+                    if (mensajeError.isNotEmpty()) {
+                        Text(
+                            text = mensajeError,
+                            color = Color.Red,
+                            modifier = Modifier.padding(4.dp)
+                        )
+                    }
+
                     OutlinedTextField(
                         value = estadoApellido,
                         onValueChange = { estadoApellido = it },
-                        label = { Text(text = "Nombre") },
+                        label = { Text(text = "Apellido") },
                         modifier = Modifier.padding(10.dp)
                     )
+
+                    OutlinedTextField(
+                        value = estadoNickname,
+                        onValueChange = { estadoNickname = it },
+                        label = { Text(text = "Nickname") },
+                        modifier = Modifier.padding(10.dp)
+                    )
+                    if (mensajeError.isNotEmpty()) {
+                        Text(
+                            text = mensajeError,
+                            color = Color.Red,
+                            modifier = Modifier.padding(4.dp)
+                        )
+                    }
                     Row {
                         Image(
                             painter = painterResource(id = R.drawable.android),
@@ -150,7 +192,7 @@ fun NuevoUsuarioVertical(navController: NavController, modifier: Modifier) {
                             modifier = Modifier.requiredSize(80.dp)
                         )
                         Spacer(modifier.height(10.dp).width(10.dp))
-                        Button(onClick = {}) { Text("Change") }
+                        Button(onClick = {}) { Text("Cambiar") }
                     }
                 }
             }
@@ -163,7 +205,7 @@ fun NuevoUsuarioVertical(navController: NavController, modifier: Modifier) {
                     )
                 }
                 Column {
-                    var estadoTelefono by remember { mutableStateOf(" ") }
+
                     OutlinedTextField(
                         value = estadoTelefono,
                         onValueChange = { estadoTelefono = it },
@@ -181,21 +223,31 @@ fun NuevoUsuarioVertical(navController: NavController, modifier: Modifier) {
                     )
                 }
                 Column {
-                    var estadoEmail by remember { mutableStateOf(" ") }
+
                     OutlinedTextField(
                         value = estadoEmail,
                         onValueChange = { estadoEmail = it },
                         label = { Text(text = "Email") },
                         modifier = Modifier.padding(10.dp),
                         placeholder = { Text(text = "Alcachofa") })
+
+                    OutlinedButtonExample("Agregar jugador nuevo.") {
+                        if (estadoNombre.isBlank() || estadoNickname.isBlank()) {
+                            mensajeError = "Error: Este campo es obligatorio"
+                        } else {
+                            mensajeError = ""
+                            println("Formulario válido ✅ Nombre: $estadoNombre, NickName: $estadoNickname")}
+                        }
+                    }
                 }
+
             }
         }
     }
-}
     @Composable
     fun NuevoUsuarioHorizontal(navController: NavController, modifier: Modifier){
-        Column(modifier.fillMaxSize(),
+        Column(modifier.fillMaxSize()
+            .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(20.dp)) {
             Text(

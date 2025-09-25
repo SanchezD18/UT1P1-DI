@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val startDestination = "Menu"
 
-                Scaffold(modifier = Modifier.fillMaxSize(), containerColor = Color(0xFCE8B6F6)) { innerPadding ->
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NavHost(
                         navController = navController,
                         startDestination = startDestination,
