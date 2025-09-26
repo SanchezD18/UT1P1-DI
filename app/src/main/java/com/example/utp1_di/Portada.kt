@@ -128,7 +128,8 @@ fun NuevoUsuarioVertical(navController: NavController, modifier: Modifier) {
     var estadoNickname by remember { mutableStateOf(" ") }
     var estadoTelefono by remember { mutableStateOf("") }
     var estadoEmail by remember { mutableStateOf(" ") }
-    var mensajeError by remember { mutableStateOf(" ") }
+    var mensajeErrorNombre by remember { mutableStateOf(" ") }
+    var mensajeErrorNickname by remember { mutableStateOf(" ") }
 
     Column(
         modifier.fillMaxSize(),
@@ -157,9 +158,9 @@ fun NuevoUsuarioVertical(navController: NavController, modifier: Modifier) {
                         label = { Text(text = "Nombre") },
                         modifier = Modifier.padding(10.dp)
                     )
-                    if (mensajeError.isNotEmpty()) {
+                    if (mensajeErrorNombre.isNotEmpty()) {
                         Text(
-                            text = mensajeError,
+                            text = mensajeErrorNombre,
                             color = Color.Red,
                             modifier = Modifier.padding(4.dp)
                         )
@@ -178,9 +179,9 @@ fun NuevoUsuarioVertical(navController: NavController, modifier: Modifier) {
                         label = { Text(text = "Nickname") },
                         modifier = Modifier.padding(10.dp)
                     )
-                    if (mensajeError.isNotEmpty()) {
+                    if (mensajeErrorNickname.isNotEmpty()) {
                         Text(
-                            text = mensajeError,
+                            text = mensajeErrorNickname,
                             color = Color.Red,
                             modifier = Modifier.padding(4.dp)
                         )
@@ -232,13 +233,26 @@ fun NuevoUsuarioVertical(navController: NavController, modifier: Modifier) {
                         placeholder = { Text(text = "Alcachofa") })
 
                     OutlinedButtonExample("Agregar jugador nuevo.") {
-                        if (estadoNombre.isBlank() || estadoNickname.isBlank()) {
-                            mensajeError = "Error: Este campo es obligatorio"
+                        if (estadoNombre.isBlank()) {
+                            mensajeErrorNombre = "Este campo es obligatorio."
                         } else {
-                            mensajeError = ""
-                            println("Formulario válido ✅ Nombre: $estadoNombre, NickName: $estadoNickname")}
+                            mensajeErrorNombre = ""
                         }
-                    }
+                        }
+                        if (estadoNickname.isBlank()) {
+                        mensajeErrorNickname = "Este campo es obligatorio."
+                        } else {
+                        mensajeErrorNickname = ""
+                        }
+                        if (!estadoNombre.isBlank() && !estadoNickname.isBlank()){
+                           val textoValido = "Formulario válido. Nombre: $estadoNombre, NickName: $estadoNickname"
+                            Text(
+                                text = textoValido,
+                                color = Color.Green,
+                                modifier = Modifier.padding(4.dp)
+                            )}
+                }
+
                 }
 
             }
