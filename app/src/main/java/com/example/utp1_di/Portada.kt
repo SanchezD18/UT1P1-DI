@@ -20,19 +20,26 @@ import androidx.navigation.NavController
 import androidx.compose.ui.platform.LocalConfiguration
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import java.util.prefs.Preferences
 
 val GoudyFont = FontFamily(Font(R.font.goudybookletter))
 
@@ -75,6 +82,9 @@ fun NuevoUsuarioPrincipal(navController : NavController, modifier: Modifier){
 
 
 
+
+
+
 @Composable
 fun MenuPrincipalVertical(navController : NavController, modifier: Modifier){
     Column (modifier.fillMaxSize(),
@@ -90,7 +100,7 @@ fun MenuPrincipalVertical(navController : NavController, modifier: Modifier){
         Spacer(modifier.height(20.dp))
         FilledButtonExample("Libros") { }
         FilledButtonExample("Usuarios") { }
-        FilledButtonExample("Búsqueda") { }
+        FilledButtonExample("Preferences") { navController.navigate("Preferences") }
         FilledButtonExample("Nuevo Usuario") { navController.navigate("NuevoUsuario") }
 }}
 
@@ -111,7 +121,7 @@ fun MenuPrincipalHorizontal(navController : NavController, modifier: Modifier){
             Spacer(modifier = modifier
                 .width(10.dp))
             FilledButtonExample("Reseñas") { } }
-        Row(modifier = modifier) { FilledButtonExample("Búsqueda") {}
+        Row(modifier = modifier) { FilledButtonExample("Preferences") {navController.navigate("Preferences")}
             Spacer(modifier = modifier
                 .width(10.dp))
             FilledButtonExample("Nuevo Usuario") { navController.navigate("NuevoUsuario") }
@@ -123,13 +133,13 @@ fun MenuPrincipalHorizontal(navController : NavController, modifier: Modifier){
 
 @Composable
 fun NuevoUsuarioVertical(navController: NavController, modifier: Modifier) {
-    var estadoNombre by remember { mutableStateOf(" ") }
-    var estadoApellido by remember { mutableStateOf(" ") }
-    var estadoNickname by remember { mutableStateOf(" ") }
+    var estadoNombre by remember { mutableStateOf("") }
+    var estadoApellido by remember { mutableStateOf("") }
+    var estadoNickname by remember { mutableStateOf("") }
     var estadoTelefono by remember { mutableStateOf("") }
-    var estadoEmail by remember { mutableStateOf(" ") }
-    var mensajeErrorNombre by remember { mutableStateOf(" ") }
-    var mensajeErrorNickname by remember { mutableStateOf(" ") }
+    var estadoEmail by remember { mutableStateOf("") }
+    var mensajeErrorNombre by remember { mutableStateOf("") }
+    var mensajeErrorNickname by remember { mutableStateOf("") }
 
     Column(
         modifier.fillMaxSize(),
@@ -155,10 +165,10 @@ fun NuevoUsuarioVertical(navController: NavController, modifier: Modifier) {
                     OutlinedTextField(
                         value = estadoNombre,
                         onValueChange = { estadoNombre = it },
-                        label = { Text(text = "Nombre") },
+                        label = { Text("Nombre") },
                         modifier = Modifier.padding(10.dp)
                     )
-                    if (mensajeErrorNombre.isNotEmpty()) {
+                    if (!mensajeErrorNombre.isEmpty()) {
                         Text(
                             text = mensajeErrorNombre,
                             color = Color.Red,
@@ -169,17 +179,17 @@ fun NuevoUsuarioVertical(navController: NavController, modifier: Modifier) {
                     OutlinedTextField(
                         value = estadoApellido,
                         onValueChange = { estadoApellido = it },
-                        label = { Text(text = "Apellido") },
+                        label = { Text("Apellido") },
                         modifier = Modifier.padding(10.dp)
                     )
 
                     OutlinedTextField(
                         value = estadoNickname,
                         onValueChange = { estadoNickname = it },
-                        label = { Text(text = "Nickname") },
+                        label = { Text("Nickname") },
                         modifier = Modifier.padding(10.dp)
                     )
-                    if (mensajeErrorNickname.isNotEmpty()) {
+                    if (!mensajeErrorNickname.isEmpty()) {
                         Text(
                             text = mensajeErrorNickname,
                             color = Color.Red,
@@ -210,7 +220,7 @@ fun NuevoUsuarioVertical(navController: NavController, modifier: Modifier) {
                     OutlinedTextField(
                         value = estadoTelefono,
                         onValueChange = { estadoTelefono = it },
-                        label = { Text(text = "Teléfono") },
+                        label = { Text("Teléfono") },
                         modifier = Modifier.padding(10.dp)
                     )
                 }
@@ -228,9 +238,9 @@ fun NuevoUsuarioVertical(navController: NavController, modifier: Modifier) {
                     OutlinedTextField(
                         value = estadoEmail,
                         onValueChange = { estadoEmail = it },
-                        label = { Text(text = "Email") },
+                        label = { Text("Email") },
                         modifier = Modifier.padding(10.dp),
-                        placeholder = { Text(text = "Alcachofa") })
+                        )
 
                     OutlinedButtonExample("Agregar jugador nuevo.") {
                         if (estadoNombre.isBlank()) {
@@ -258,8 +268,8 @@ fun NuevoUsuarioVertical(navController: NavController, modifier: Modifier) {
             }
         }
     }
-    @Composable
-    fun NuevoUsuarioHorizontal(navController: NavController, modifier: Modifier){
+@Composable
+fun NuevoUsuarioHorizontal(navController: NavController, modifier: Modifier){
         Column(modifier.fillMaxSize()
             .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -326,5 +336,87 @@ fun NuevoUsuarioVertical(navController: NavController, modifier: Modifier) {
         }
 
     }
+
+
+@Composable
+fun PreferencesPrincipal(navController : NavController, modifier: Modifier){
+    val orientation = LocalConfiguration.current.orientation
+    if (orientation == ORIENTATION_LANDSCAPE) {
+        PreferencesHorizontal(navController, modifier)
+    } else {
+        PreferencesVertical(navController, modifier)
+    }
+
+}
+
+@Composable
+fun PreferencesVertical(navController : NavController, modifier: Modifier){
+    Column (modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Text(
+            modifier = modifier,
+            text = "Elige una opción:",
+            fontSize = 20.sp,
+            fontFamily = GoudyFont
+        )
+
+            val radioOptions = listOf("La puerta", "Una corte de rosas y espinas", "Por si las voces vuelven",
+                "La mansión Starling", "La psicóloga", "Delito", "El fugitivo")
+            val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
+            Column(modifier.selectableGroup()) {
+                radioOptions.forEach { text ->
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .height(56.dp)
+                            .selectable(
+                                selected = (text == selectedOption),
+                                onClick = { onOptionSelected(text) },
+                                role = Role.RadioButton
+                            )
+                            .padding(horizontal = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = (text == selectedOption),
+                            onClick = null
+                        )
+                        Text(
+                            text = text,
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.padding(start = 16.dp)
+                        )
+                    }
+                }
+                //BARRA
+            }
+        }
+
+    }
+
+
+@Composable
+fun PreferencesHorizontal(navController : NavController, modifier: Modifier){
+    Column (modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Spacer(modifier.height(120.dp))
+        Text(
+            modifier = modifier,
+            text = "DaviTeca",
+            fontSize = 40.sp,
+            fontFamily = GoudyFont
+        )
+        Spacer(modifier.height(20.dp))
+        FilledButtonExample("Libros") { }
+        FilledButtonExample("Usuarios") { }
+        FilledButtonExample("Búsqueda") { }
+        FilledButtonExample("Nuevo Usuario") { navController.navigate("NuevoUsuario") }
+    }}
+
+
+
+
 
 

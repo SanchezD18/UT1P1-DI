@@ -42,6 +42,12 @@ class MainActivity : ComponentActivity() {
                                 modifier = Modifier.padding(innerPadding)
                             )
                         }
+                        composable("Preferences") {
+                            PreferencesPrincipal(
+                                navController,
+                                modifier = Modifier.padding(innerPadding)
+                            )
+                        }
                     }
                 }
             }
