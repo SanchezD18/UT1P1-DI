@@ -9,7 +9,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.compose.ui.platform.LocalConfiguration
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -31,10 +36,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.Font
@@ -51,6 +60,27 @@ fun FilledButtonExample(texto: String, onClick: () -> Unit) {
         ) {
         Text(texto)
     }}
+
+@Composable
+fun SliderAdvancedExample(): Float {
+    var sliderPosition by remember { mutableFloatStateOf(0f) }
+    Column {
+        Slider(
+            value = sliderPosition,
+            onValueChange = { sliderPosition = it },
+            colors = SliderDefaults.colors(
+                thumbColor = MaterialTheme.colorScheme.secondary,
+                activeTrackColor = MaterialTheme.colorScheme.secondary,
+                inactiveTrackColor = MaterialTheme.colorScheme.secondaryContainer,
+            ),
+            steps = 10,
+            valueRange = 0f..10f
+        )
+        Text(text = "Puntuación: ${sliderPosition.toInt()}")
+    }
+    return sliderPosition
+}
+
 
 @Composable
 fun OutlinedButtonExample(texto: String, onClick: () -> Unit) {
@@ -351,6 +381,9 @@ fun PreferencesPrincipal(navController : NavController, modifier: Modifier){
 
 @Composable
 fun PreferencesVertical(navController : NavController, modifier: Modifier){
+    var sliderPosition by remember { mutableFloatStateOf(0f) }
+    var context = LocalContext.current
+    
     Column (modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -361,39 +394,61 @@ fun PreferencesVertical(navController : NavController, modifier: Modifier){
             fontFamily = GoudyFont
         )
 
-            val radioOptions = listOf("La puerta", "Una corte de rosas y espinas", "Por si las voces vuelven",
-                "La mansión Starling", "La psicóloga", "Delito", "El fugitivo")
-            val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
-            Column(modifier.selectableGroup()) {
-                radioOptions.forEach { text ->
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .height(56.dp)
-                            .selectable(
-                                selected = (text == selectedOption),
-                                onClick = { onOptionSelected(text) },
-                                role = Role.RadioButton
-                            )
-                            .padding(horizontal = 16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
+        val radioOptions = listOf("La puerta", "Una corte de rosas y espinas", "Por si las voces vuelven",
+            "La mansión Starling", "La psicóloga", "Delito", "El fugitivo")
+        val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
+        Column(modifier.selectableGroup()) {
+            radioOptions.forEach { text ->
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .selectable(
                             selected = (text == selectedOption),
-                            onClick = null
+                            onClick = { onOptionSelected(text) },
+                            role = Role.RadioButton
                         )
-                        Text(
-                            text = text,
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.padding(start = 16.dp)
-                        )
-                    }
+                        .padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    RadioButton(
+                        selected = (text == selectedOption),
+                        onClick = null
+                    )
+                    Text(
+                        text = text,
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(start = 16.dp)
+                    )
                 }
-                //BARRA
             }
         }
 
+        Slider(
+            value = sliderPosition,
+            onValueChange = { sliderPosition = it },
+            colors = SliderDefaults.colors(
+                thumbColor = MaterialTheme.colorScheme.secondary,
+                activeTrackColor = MaterialTheme.colorScheme.secondary,
+                inactiveTrackColor = MaterialTheme.colorScheme.secondaryContainer,
+            ),
+            steps = 10,
+            valueRange = 0f..10f
+        )
+
+        FloatingActionButton(
+            onClick = {
+                Toast.makeText(context, "Has seleccionado: ${selectedOption} con una puntuación de ${sliderPosition}", Toast.LENGTH_LONG).show()
+            },
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Check,
+                contentDescription = "Confirmar selección"
+            )
+        }
     }
+}
 
 
 @Composable
