@@ -25,6 +25,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
@@ -32,6 +34,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -43,13 +46,16 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.vector.ImageVector
+
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import java.util.prefs.Preferences
-
+import com.components.ratingbar.RatingBar
+import kotlin.math.ceil
+import kotlin.math.floor
 val GoudyFont = FontFamily(Font(R.font.goudybookletter))
 
 @Composable
@@ -109,8 +115,6 @@ fun NuevoUsuarioPrincipal(navController : NavController, modifier: Modifier){
     }
 
 }
-
-
 
 
 
@@ -294,7 +298,6 @@ fun NuevoUsuarioVertical(navController: NavController, modifier: Modifier) {
                 }
 
                 }
-
             }
         }
     }
@@ -381,12 +384,14 @@ fun PreferencesPrincipal(navController : NavController, modifier: Modifier){
 
 @Composable
 fun PreferencesVertical(navController : NavController, modifier: Modifier){
-    var sliderPosition by remember { mutableFloatStateOf(0f) }
+    var posicionSlider by remember { mutableFloatStateOf(0f) }
     var context = LocalContext.current
-    
-    Column (modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(10.dp)) {
+    val radioOptions = listOf("La puerta", "Una corte de rosas y espinas", "Por si las voces vuelven",
+        "La mansión Starling", "La psicóloga", "Delito", "El fugitivo")
+    val (selectedOption, onOptionSelected) = remember { mutableStateOf("") }
+
+
+    Box(modifier.fillMaxSize().padding(16.dp)) {
         Text(
             modifier = modifier,
             text = "Elige una opción:",
@@ -394,10 +399,8 @@ fun PreferencesVertical(navController : NavController, modifier: Modifier){
             fontFamily = GoudyFont
         )
 
-        val radioOptions = listOf("La puerta", "Una corte de rosas y espinas", "Por si las voces vuelven",
-            "La mansión Starling", "La psicóloga", "Delito", "El fugitivo")
-        val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
         Column(modifier.selectableGroup()) {
+            Spacer(modifier.height(3.dp))
             radioOptions.forEach { text ->
                 Row(
                     Modifier
@@ -422,33 +425,40 @@ fun PreferencesVertical(navController : NavController, modifier: Modifier){
                     )
                 }
             }
+            Slider(
+                value = posicionSlider,
+                onValueChange = { posicionSlider = it },
+                colors = SliderDefaults.colors(
+                    thumbColor = MaterialTheme.colorScheme.secondary,
+                    activeTrackColor = MaterialTheme.colorScheme.secondary,
+                    inactiveTrackColor = MaterialTheme.colorScheme.secondaryContainer,
+                ),
+                steps = 10,
+                valueRange = 0f..10f
+            )
+            Column {
+                RatingBar(rating = 3.7f, spaceBetween = 3.dp)
+                RatingBar(rating = 2.5f, spaceBetween = 2.dp)
+                RatingBar(rating = 4.5f, spaceBetween = 2.dp)
+                RatingBar(rating = 1.3f, spaceBetween = 4.dp)
+            }
         }
-
-        Slider(
-            value = sliderPosition,
-            onValueChange = { sliderPosition = it },
-            colors = SliderDefaults.colors(
-                thumbColor = MaterialTheme.colorScheme.secondary,
-                activeTrackColor = MaterialTheme.colorScheme.secondary,
-                inactiveTrackColor = MaterialTheme.colorScheme.secondaryContainer,
-            ),
-            steps = 10,
-            valueRange = 0f..10f
-        )
 
         FloatingActionButton(
             onClick = {
-                Toast.makeText(context, "Has seleccionado: ${selectedOption} con una puntuación de ${sliderPosition}", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Has seleccionado: ${selectedOption} con una puntuación de ${posicionSlider}", Toast.LENGTH_LONG).show()
             },
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)
         ) {
             Icon(
                 imageVector = Icons.Default.Check,
                 contentDescription = "Confirmar selección"
             )
-        }
+    }
+
     }
 }
+
 
 
 @Composable
