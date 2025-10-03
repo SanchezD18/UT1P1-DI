@@ -1,7 +1,6 @@
-package com.components.ratingbar
-
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.runtime.Composable
@@ -14,6 +13,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.material3.Text
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -21,16 +21,21 @@ import kotlin.math.sin
 fun RatingBar(
     rating: Float,
     modifier: Modifier = Modifier,
-    color: Color = Color.Yellow
+    color: Color = Color.Yellow,
+    onRatingChange: (Float) -> Unit = {}
 ) {
     Row(modifier = modifier.wrapContentSize()) {
-        (1..5).forEach { step ->
+        (1..10).forEach { step ->
             val stepRating = when {
-                rating > step -> 1f
-                step.rem(rating) < 1 -> rating - (step - 1f)
+                rating >= step -> 1f
+                rating > step - 1 -> rating - (step - 1f)
                 else -> 0f
             }
-            RatingStar(stepRating, color)
+            RatingStar(
+                rating = stepRating,
+                ratingColor = color,
+                onClick = { onRatingChange(step.toFloat()) }
+            )
         }
     }
 }
@@ -39,13 +44,15 @@ fun RatingBar(
 private fun RatingStar(
     rating: Float,
     ratingColor: Color = Color.Yellow,
-    backgroundColor: Color = Color.Gray
+    backgroundColor: Color = Color.Gray,
+    onClick: () -> Unit = {}
 ) {
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxHeight()
             .aspectRatio(1f)
             .clip(starShape)
+            .clickable { onClick() }
     ) {
         Canvas(modifier = Modifier.size(maxHeight)) {
             drawRect(
@@ -107,11 +114,23 @@ private val starPath = { size: Float ->
 @Composable
 fun RatingBarPreview() {
     Column(
-        Modifier.fillMaxSize().background(Color.White)
+        Modifier.fillMaxSize().background(Color.White).padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        Text("RatingBar con diferentes valores:")
         RatingBar(
-            3.8f,
-            modifier = Modifier.height(20.dp)
+            rating = 3.8f,
+            modifier = Modifier.height(30.dp)
+        )
+        RatingBar(
+            rating = 2.5f,
+            modifier = Modifier.height(30.dp),
+            color = Color.Red
+        )
+        RatingBar(
+            rating = 5f,
+            modifier = Modifier.height(30.dp),
+            color = Color.Green
         )
     }
 }

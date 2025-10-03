@@ -1,5 +1,6 @@
 package com.example.utp1_di
 
+import RatingBar
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,8 +26,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
@@ -34,6 +35,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -47,15 +52,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
-
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import com.components.ratingbar.RatingBar
 import kotlin.math.ceil
 import kotlin.math.floor
+
 val GoudyFont = FontFamily(Font(R.font.goudybookletter))
 
 @Composable
@@ -88,6 +92,32 @@ fun SliderAdvancedExample(): Float {
 }
 
 
+@Composable
+fun RatingBar2(
+modifier:Modifier=Modifier,
+rating:Int=0,
+stars:Int=10,
+starsColor:Color=Color.Yellow,
+onRatingChanged: (Int) -> Unit = {}
+){
+
+    Row(modifier=modifier){
+        for (i in 1..stars) {
+            val icon = if (i <= rating) {
+                Icons.Filled.Favorite
+            } else {
+                Icons.Filled.FavoriteBorder
+            }
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = starsColor,
+                modifier = Modifier.clickable {
+                    onRatingChanged(i)
+                })
+        }
+    }
+}
 @Composable
 fun OutlinedButtonExample(texto: String, onClick: () -> Unit) {
     OutlinedButton(onClick = { onClick() }) {
@@ -385,6 +415,8 @@ fun PreferencesPrincipal(navController : NavController, modifier: Modifier){
 @Composable
 fun PreferencesVertical(navController : NavController, modifier: Modifier){
     var posicionSlider by remember { mutableFloatStateOf(0f) }
+    var rating by remember { mutableFloatStateOf(0f) }
+    var rating2 by remember { mutableStateOf(0) }
     var context = LocalContext.current
     val radioOptions = listOf("La puerta", "Una corte de rosas y espinas", "Por si las voces vuelven",
         "La mansión Starling", "La psicóloga", "Delito", "El fugitivo")
@@ -427,7 +459,10 @@ fun PreferencesVertical(navController : NavController, modifier: Modifier){
             }
             Slider(
                 value = posicionSlider,
-                onValueChange = { posicionSlider = it },
+                onValueChange = { newValue -> 
+                    posicionSlider = newValue
+                    rating = newValue
+                },
                 colors = SliderDefaults.colors(
                     thumbColor = MaterialTheme.colorScheme.secondary,
                     activeTrackColor = MaterialTheme.colorScheme.secondary,
@@ -437,16 +472,26 @@ fun PreferencesVertical(navController : NavController, modifier: Modifier){
                 valueRange = 0f..10f
             )
             Column {
-                RatingBar(rating = 3.7f, spaceBetween = 3.dp)
-                RatingBar(rating = 2.5f, spaceBetween = 2.dp)
-                RatingBar(rating = 4.5f, spaceBetween = 2.dp)
-                RatingBar(rating = 1.3f, spaceBetween = 4.dp)
+                RatingBar2(
+                    rating = rating2,
+                    stars = 10,
+                    onRatingChanged = { newRating ->
+                        rating2 = newRating
+                    })
+                RatingBar(
+                    rating = rating,
+                    modifier = Modifier.height(20.dp),
+                    onRatingChange = { newRating -> 
+                        rating = newRating
+                        posicionSlider = newRating
+                    }
+                )
             }
         }
 
         FloatingActionButton(
             onClick = {
-                Toast.makeText(context, "Has seleccionado: ${selectedOption} con una puntuación de ${posicionSlider}", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Has seleccionado: ${selectedOption} con una puntuación de ${posicionSlider} y rating de ${rating} estrellas", Toast.LENGTH_LONG).show()
             },
             modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)
         ) {
