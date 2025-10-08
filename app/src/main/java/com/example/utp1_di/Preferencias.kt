@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
@@ -51,7 +52,7 @@ fun RatingBar2(
     modifier:Modifier=Modifier,
     rating:Int=0,
     stars:Int=10,
-    starsColor:Color=Color.Yellow,
+    starsColor:Color=Color.Red,
     onRatingChanged: (Int) -> Unit = {}
 ){
     Row(modifier=modifier){
@@ -86,7 +87,7 @@ fun PreferencesPrincipal(navController : NavController, modifier: Modifier){
 @Composable
 fun PreferencesVertical(modifier: Modifier){
     var posicionSlider by remember { mutableFloatStateOf(0f) }
-    var rating2 by remember { mutableIntStateOf(0) }
+    var rating by remember { mutableIntStateOf(0) }
     val context = LocalContext.current
 
     val radioOptions = listOf("La puerta", "Una corte de rosas y espinas", "Por si las voces vuelven",
@@ -96,7 +97,9 @@ fun PreferencesVertical(modifier: Modifier){
     val chipOptions = listOf("Kindle", "Audible", "Nextory", "Prime Reading")
 
 
-    Box(modifier.fillMaxSize().padding(16.dp)) {
+    Box(modifier
+        .fillMaxSize()
+        .padding(16.dp)) {
         Text(
             modifier = modifier,
             text = "Elige una opción:",
@@ -143,16 +146,23 @@ fun PreferencesVertical(modifier: Modifier){
                 steps = 10,
                 valueRange = 0f..10f
             )
-            Column {
+            Column(modifier.padding(60.dp,5.dp,10.dp,5.dp)){
                 RatingBar2(
-                    rating = rating2,
+                    rating = rating,
                     stars = 10,
                     onRatingChanged = { newRating ->
-                        rating2 = newRating
+                        rating = newRating
                     })
 
             }
-            Row {
+            Text(
+                modifier = modifier,
+                text = "Plataformas:",
+                fontSize = 20.sp,
+            )
+            Row(
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
                 chipOptions.forEach { text ->
                     var chipSeleccionada by remember {mutableStateOf(false)}
                     val (chipSeleccion, onChipSelected) = remember {mutableStateOf("")}
@@ -161,7 +171,9 @@ fun PreferencesVertical(modifier: Modifier){
                         onClick = {onChipSelected(text)
                             chipSeleccionada = !chipSeleccionada
 
-                            Toast.makeText(context, "Has seleccionado ${chipSeleccion}", Toast.LENGTH_LONG).show()
+                            if (chipSeleccionada){
+                                Toast.makeText(context, "Has seleccionado ${chipSeleccion}", Toast.LENGTH_LONG).show()
+                            }
                         },
                         label = {Text(text)},
                         leadingIcon = if (chipSeleccionada) {
@@ -182,9 +194,11 @@ fun PreferencesVertical(modifier: Modifier){
 
         FloatingActionButton(
             onClick = {
-                Toast.makeText(context, "Has seleccionado: ${radioSeleccion} con una puntuación de ${posicionSlider} y rating de ${rating2} estrellas", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Has seleccionado: ${radioSeleccion} con una puntuación de ${posicionSlider.toInt()} y rating de ${rating} estrellas", Toast.LENGTH_LONG).show()
             },
-            modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp)
         ) {
             Icon(
                 imageVector = Icons.Default.Check,

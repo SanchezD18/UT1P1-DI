@@ -81,12 +81,24 @@ fun LibrosPrincipal(navController : NavController, modifier: Modifier){
 
 @Composable
 fun LibrosVertical(modifier: Modifier){
+
     val context = LocalContext.current
 
     Box(modifier.fillMaxSize().padding(16.dp)) {
 
+        val bookTitles = listOf("La puerta", "Una corte de rosas y espinas", "El fugitivo", "Delito")
+        val myOptions = getOptions(bookTitles)
+        val librosSeleccionados = myOptions.filter { it.selected }.map { it.title }
+
         Column (modifier = modifier) {
-            val myOptions = getOptions(listOf("La puerta", "Una corte de rosas y espinas", "El fugitivo", "Delito"))
+
+            val bookImages = listOf(
+                R.drawable.lapuerta,
+                R.drawable.unacortederosasyespinas,
+                R.drawable.elfugitivo,
+                R.drawable.delito
+            )
+
 
             Text(
                 modifier = modifier,
@@ -95,20 +107,26 @@ fun LibrosVertical(modifier: Modifier){
                 fontFamily = GoudyFont
             )
             Spacer(Modifier.size(30.dp))
-            Column() {
-                myOptions.forEach {
-                    Image(
-                        painter = painterResource(id = R.drawable.android),
+            myOptions.forEachIndexed { index, checkInfo ->
+                    Row(modifier.padding(10.dp)) {Image(
+                        painter = painterResource(id = bookImages[index]),
                         contentDescription = "Imagenes",
                         modifier = Modifier.requiredSize(80.dp)
                     )
-                    MyCheckBox(it)
+                    MyCheckBox(checkInfo)
                 }
             }
+
         }
+
         FloatingActionButton(
             onClick = {
-                Toast.makeText(context, "A", Toast.LENGTH_LONG).show()
+                val mensaje = if (librosSeleccionados.isEmpty()) {
+                    "No has seleccionado ningún libro"
+                } else {
+                    "Has seleccionado: ${librosSeleccionados.joinToString(", ")}"
+                }
+                Toast.makeText(context, mensaje, Toast.LENGTH_LONG).show()
             },
             modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)
         ) {

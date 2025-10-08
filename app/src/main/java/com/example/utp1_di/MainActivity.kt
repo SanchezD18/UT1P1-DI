@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.utp1_di.ui.theme.SplashScreen
 import com.example.utp1_di.ui.theme.UTP1DITheme
 
 class MainActivity : ComponentActivity() {
@@ -20,15 +21,16 @@ class MainActivity : ComponentActivity() {
         setContent {
             UTP1DITheme {
                 val navController = rememberNavController()
-                val startDestination = "Menu"
+                val startDestination = "SplashScreen"
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    NavHost(
-                        navController = navController,
-                        startDestination = startDestination,
-                        modifier = Modifier.padding(innerPadding)
-
-                    ) {
+                    NavHost(navController, startDestination, Modifier.padding(innerPadding)) {
+                        composable("SplashScreen") {
+                            SplashScreen(
+                                navController,
+                                modifier = Modifier.padding(innerPadding)
+                            )
+                        }
                         composable("Menu") {
                             MenuPrincipal(
                                 navController,
