@@ -2,11 +2,13 @@ package com.example.utp1_di
 
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
@@ -14,6 +16,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -43,20 +47,20 @@ fun OutlinedButtonExample(texto: String, onClick: () -> Unit) {
 fun NuevoUsuarioPrincipal(navController : NavController, modifier: Modifier){
     val orientation = LocalConfiguration.current.orientation
     if (orientation == ORIENTATION_LANDSCAPE) {
-        NuevoUsuarioHorizontal(navController, modifier)
+        NuevoUsuarioHorizontal(modifier)
     } else {
-        NuevoUsuarioVertical(navController, modifier)
+        NuevoUsuarioVertical(modifier)
     }
 
 }
 
+
 @Composable
-fun NuevoUsuarioVertical(navController: NavController, modifier: Modifier) {
+fun NuevoUsuarioVertical(modifier: Modifier) {
     var estadoNombre by remember { mutableStateOf("") }
     var estadoApellido by remember { mutableStateOf("") }
     var estadoNickname by remember { mutableStateOf("") }
     var estadoTelefono by remember { mutableStateOf("") }
-    var estadoEmail by remember { mutableStateOf("") }
     var mensajeErrorNombre by remember { mutableStateOf("") }
     var mensajeErrorNickname by remember { mutableStateOf("") }
 
@@ -154,12 +158,36 @@ fun NuevoUsuarioVertical(navController: NavController, modifier: Modifier) {
                 }
                 Column {
 
+                    var selectedText by remember { mutableStateOf("") }
+                    var expanded by remember { mutableStateOf(false) }
+                    val series = listOf("davidyo99@gmail.com", "smdavid1999@gmail.com", "davsanman2@alu.edu.gva.es", "al375850@uji.es")
+
                     OutlinedTextField(
-                        value = estadoEmail,
-                        onValueChange = { estadoEmail = it },
+                        value = selectedText,
+                        onValueChange = { selectedText = it },
                         label = { Text("Email") },
-                        modifier = Modifier.padding(10.dp),
+                        enabled = false,
+                        readOnly = true,
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .clickable { expanded = true }
+                            .fillMaxWidth()
                     )
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        series.forEach { serie ->
+                            DropdownMenuItem(
+                                onClick = {
+                                    expanded = false
+                                    selectedText = serie
+                                },
+                                text = { Text(text = serie) }
+                            )
+                        }
+                    }
 
                     OutlinedButtonExample("Agregar jugador nuevo.") {
                         if (estadoNombre.isBlank()) {
@@ -187,7 +215,7 @@ fun NuevoUsuarioVertical(navController: NavController, modifier: Modifier) {
     }
 }
 @Composable
-fun NuevoUsuarioHorizontal(navController: NavController, modifier: Modifier){
+fun NuevoUsuarioHorizontal(modifier: Modifier){
     Column(modifier.fillMaxSize()
         .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,

@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
@@ -163,20 +162,20 @@ fun PreferencesVertical(modifier: Modifier){
             Row(
             horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
+                val (chipSeleccion, onChipSelected) = remember {mutableStateOf("")}
                 chipOptions.forEach { text ->
-                    var chipSeleccionada by remember {mutableStateOf(false)}
-                    val (chipSeleccion, onChipSelected) = remember {mutableStateOf("")}
                     FilterChip(
                         selected = (text == chipSeleccion),
-                        onClick = {onChipSelected(text)
-                            chipSeleccionada = !chipSeleccionada
-
-                            if (chipSeleccionada){
-                                Toast.makeText(context, "Has seleccionado ${chipSeleccion}", Toast.LENGTH_LONG).show()
+                        onClick = {
+                            if (text == chipSeleccion) {
+                                onChipSelected("")
+                            } else {
+                                onChipSelected(text)
+                                Toast.makeText(context, "Has seleccionado $text", Toast.LENGTH_LONG).show()
                             }
                         },
                         label = {Text(text)},
-                        leadingIcon = if (chipSeleccionada) {
+                        leadingIcon = if (text == chipSeleccion) {
                             {
                                 Icon(
                                     imageVector = Icons.Filled.Done,
@@ -188,13 +187,12 @@ fun PreferencesVertical(modifier: Modifier){
                             null
                         }
                     )
-
                 } }
         }
 
         FloatingActionButton(
             onClick = {
-                Toast.makeText(context, "Has seleccionado: ${radioSeleccion} con una puntuación de ${posicionSlider.toInt()} y rating de ${rating} estrellas", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Has seleccionado: $radioSeleccion con una puntuación de ${posicionSlider.toInt()} y rating de $rating estrellas", Toast.LENGTH_LONG).show()
             },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
