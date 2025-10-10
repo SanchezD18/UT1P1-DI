@@ -45,8 +45,6 @@ fun MenuPrincipal(navController : NavController, modifier: Modifier){
 
 }
 
-
-
 @Composable
 fun MenuPrincipalVertical(navController : NavController, modifier: Modifier){
     Column (modifier.fillMaxSize(),
@@ -69,7 +67,8 @@ fun MenuPrincipalVertical(navController : NavController, modifier: Modifier){
 
 @Composable
 fun MenuPrincipalHorizontal(navController : NavController, modifier: Modifier){
-    Column (modifier.fillMaxSize(),
+    Column (modifier
+        .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(-20.dp)) {
         Spacer(modifier = modifier

@@ -24,7 +24,7 @@ fun SplashScreen(navController: NavController, modifier: Modifier){
         Image(
             painter = painterResource(id = R.drawable.montanalibros),
             contentDescription = "Imagen centrada",
-            modifier = Modifier.size(150.dp) // tamaño opcional
+            modifier = Modifier.size(150.dp)
         )
     }
     LaunchedEffect(true) {

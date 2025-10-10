@@ -3,17 +3,17 @@ package com.example.utp1_di
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Checkbox
@@ -43,12 +43,12 @@ onCheckedChange:(Boolean)->Unit)
 @Composable
 fun getOptions(titles: List<String>): List<CheckInfo> {
     return titles.map {
-        var estadoCheck by remember { mutableStateOf(false)
+        var statusCheck by remember { mutableStateOf(false)
         }
         CheckInfo(
             title = it,
-            selected = estadoCheck,
-            onCheckedChange = { estadoCheck = it }
+            selected = statusCheck,
+            onCheckedChange = { statusCheck = it }
         )
     }}
 
@@ -71,31 +71,25 @@ fun LibrosPrincipal(navController : NavController, modifier: Modifier){
         LibrosHorizontal(navController, modifier)
     } else {
         LibrosVertical(modifier)
-    }
-
-}
+    } }
 
 @Composable
 fun LibrosVertical(modifier: Modifier){
-
     val context = LocalContext.current
-
-    Box(modifier.fillMaxSize().padding(16.dp)) {
+    Box(modifier
+        .fillMaxSize()
+        .padding(16.dp)) {
 
         val bookTitles = listOf("La puerta", "Una corte de rosas y espinas", "El fugitivo", "Delito")
         val myOptions = getOptions(bookTitles)
-        val librosSeleccionados = myOptions.filter { it.selected }.map { it.title }
-
+        val selectedBooks = myOptions.filter { it.selected }.map { it.title }
         Column (modifier = modifier) {
-
             val bookImages = listOf(
                 R.drawable.lapuerta,
                 R.drawable.unacortederosasyespinas,
                 R.drawable.elfugitivo,
                 R.drawable.delito
             )
-
-
             Text(
                 modifier = modifier,
                 text = "Lista de Libros:",
@@ -117,14 +111,16 @@ fun LibrosVertical(modifier: Modifier){
 
         FloatingActionButton(
             onClick = {
-                val mensaje = if (librosSeleccionados.isEmpty()) {
-                    "No has seleccionado ningún libro"
+                val message = if (selectedBooks.isEmpty()) {
+                    "No has seleccionado ningún libro."
                 } else {
-                    "Has seleccionado: ${librosSeleccionados.joinToString(", ")}"
+                    "Has seleccionado: ${selectedBooks.joinToString(", ")}."
                 }
-                Toast.makeText(context, mensaje, Toast.LENGTH_LONG).show()
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
             },
-            modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp)
         ) {
             Icon(
                 imageVector = Icons.Default.Check,
@@ -139,19 +135,57 @@ fun LibrosVertical(modifier: Modifier){
 
 @Composable
 fun LibrosHorizontal(navController : NavController, modifier: Modifier){
-    Column (modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Spacer(modifier.height(120.dp))
-        Text(
-            modifier = modifier,
-            text = "DaviTeca",
-            fontSize = 40.sp,
-            fontFamily = GoudyFont
-        )
-        Spacer(modifier.height(20.dp))
-        FilledButtonExample("Libros") { }
-        FilledButtonExample("Usuarios") { }
-        FilledButtonExample("Búsqueda") { }
-        FilledButtonExample("Nuevo Usuario") { navController.navigate("NuevoUsuario") }
+    val context = LocalContext.current
+
+    Box(modifier
+        .fillMaxSize()
+        .padding(16.dp)
+        .verticalScroll(rememberScrollState())) {
+        val bookTitles = listOf("La puerta", "Una corte de rosas y espinas", "El fugitivo", "Delito")
+        val myOptions = getOptions(bookTitles)
+        val selectedBooks = myOptions.filter { it.selected }.map { it.title }
+
+        Column (modifier = modifier) {
+            val bookImages = listOf(
+                R.drawable.lapuerta,
+                R.drawable.unacortederosasyespinas,
+                R.drawable.elfugitivo,
+                R.drawable.delito
+            )
+            Text(
+                modifier = modifier,
+                text = "Lista de Libros:",
+                fontSize = 20.sp,
+                fontFamily = GoudyFont
+            )
+            Spacer(Modifier.size(30.dp))
+            myOptions.forEachIndexed { index, checkInfo ->
+                Row(modifier.padding(10.dp)) {Image(
+                    painter = painterResource(id = bookImages[index]),
+                    contentDescription = "Imagenes",
+                    modifier = Modifier.requiredSize(80.dp)
+                )
+                    MyCheckBox(checkInfo)
+                }
+            }
+
+        }
+
+        FloatingActionButton(
+            onClick = {
+                val mensaje = if (selectedBooks.isEmpty()) {
+                    "No has seleccionado ningún libro"
+                } else {
+                    "Has seleccionado: ${selectedBooks.joinToString(", ")}"
+                }
+                Toast.makeText(context, mensaje, Toast.LENGTH_LONG).show()
+            },
+            modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Check,
+                contentDescription = "Confirmar selección"
+            )
+        }
+
     }}

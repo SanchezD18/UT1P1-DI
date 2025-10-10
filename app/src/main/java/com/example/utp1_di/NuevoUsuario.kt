@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.OutlinedButton
@@ -63,6 +64,8 @@ fun NuevoUsuarioVertical(modifier: Modifier) {
     var estadoTelefono by remember { mutableStateOf("") }
     var mensajeErrorNombre by remember { mutableStateOf("") }
     var mensajeErrorNickname by remember { mutableStateOf("") }
+    var mensajeFormularioValido by remember { mutableStateOf("") }
+    var validacionRealizada by remember { mutableStateOf(false) }
 
     Column(
         modifier.fillMaxSize(),
@@ -87,7 +90,12 @@ fun NuevoUsuarioVertical(modifier: Modifier) {
 
                     OutlinedTextField(
                         value = estadoNombre,
-                        onValueChange = { estadoNombre = it },
+                        onValueChange = { 
+                            estadoNombre = it
+                            if (it.isNotBlank() && validacionRealizada) {
+                                mensajeErrorNombre = ""
+                            }
+                        },
                         label = { Text("Nombre") },
                         modifier = Modifier.padding(10.dp)
                     )
@@ -108,7 +116,12 @@ fun NuevoUsuarioVertical(modifier: Modifier) {
 
                     OutlinedTextField(
                         value = estadoNickname,
-                        onValueChange = { estadoNickname = it },
+                        onValueChange = { 
+                            estadoNickname = it
+                            if (it.isNotBlank() && validacionRealizada) {
+                                mensajeErrorNickname = ""
+                            }
+                        },
                         label = { Text("Nickname") },
                         modifier = Modifier.padding(10.dp)
                     )
@@ -126,7 +139,9 @@ fun NuevoUsuarioVertical(modifier: Modifier) {
                             modifier = Modifier.requiredSize(80.dp)
                         )
                         Spacer(modifier.height(10.dp).width(10.dp))
-                        Button(onClick = {}) { Text("Cambiar") }
+                        Button(onClick = {},
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
+                        ){ Text("Cambiar") }
                     }
                 }
             }
@@ -190,24 +205,32 @@ fun NuevoUsuarioVertical(modifier: Modifier) {
                     }
 
                     OutlinedButtonExample("Agregar jugador nuevo.") {
-                        if (estadoNombre.isBlank()) {
-                            mensajeErrorNombre = "Este campo es obligatorio."
+                        validacionRealizada = true
+                        mensajeFormularioValido = ""
+
+                        mensajeErrorNombre = if (estadoNombre.isBlank()) {
+                            "Este campo es obligatorio."
                         } else {
-                            mensajeErrorNombre = ""
+                            ""
+                        }
+
+                        mensajeErrorNickname = if (estadoNickname.isBlank()) {
+                            "Este campo es obligatorio."
+                        } else {
+                            ""
+                        }
+
+                        if (estadoNombre.isNotBlank() && estadoNickname.isNotBlank()) {
+                            mensajeFormularioValido = "Formulario válido."
                         }
                     }
-                    if (estadoNickname.isBlank()) {
-                        mensajeErrorNickname = "Este campo es obligatorio."
-                    } else {
-                        mensajeErrorNickname = ""
-                    }
-                    if (!estadoNombre.isBlank() && !estadoNickname.isBlank()){
-                        val textoValido = "Formulario válido. Nombre: $estadoNombre, NickName: $estadoNickname"
+                    if (mensajeFormularioValido.isNotEmpty()) {
                         Text(
-                            text = textoValido,
+                            text = mensajeFormularioValido,
                             color = Color.Green,
                             modifier = Modifier.padding(4.dp)
-                        )}
+                        )
+                    }
                 }
 
             }
@@ -216,6 +239,16 @@ fun NuevoUsuarioVertical(modifier: Modifier) {
 }
 @Composable
 fun NuevoUsuarioHorizontal(modifier: Modifier){
+    var estadoNombre by remember { mutableStateOf("") }
+    var estadoApellido by remember { mutableStateOf("") }
+    var estadoNickname by remember { mutableStateOf("") }
+    var estadoTelefono by remember { mutableStateOf("") }
+    var estadoEmail by remember { mutableStateOf("") }
+    var mensajeErrorNombre by remember { mutableStateOf("") }
+    var mensajeErrorNickname by remember { mutableStateOf("") }
+    var mensajeFormularioValido by remember { mutableStateOf("") }
+    var validacionRealizada by remember { mutableStateOf(false) }
+    
     Column(modifier.fillMaxSize()
         .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -226,59 +259,135 @@ fun NuevoUsuarioHorizontal(modifier: Modifier){
             fontSize = 30.sp,
         )
         Row {
-            Column {Row { Image(
-                painter = painterResource(id = R.drawable.account),
-                contentDescription = "Persona",
-                modifier = Modifier.requiredSize(80.dp)) }
-                Column { var estadoNombre by remember{mutableStateOf(" ") }
+            Column {
+                Row { 
+                    Image(
+                        painter = painterResource(id = R.drawable.account),
+                        contentDescription = "Persona",
+                        modifier = Modifier.requiredSize(80.dp)
+                    ) 
+                }
+                Column { 
                     OutlinedTextField(
                         value = estadoNombre,
-                        onValueChange = { estadoNombre = it },
+                        onValueChange = { 
+                            estadoNombre = it
+                            if (it.isNotBlank() && validacionRealizada) {
+                                mensajeErrorNombre = ""
+                            }
+                        },
                         label = { Text(text = "Nombre") },
-                        modifier = Modifier.padding(10.dp))
-                    var estadoApellido by remember{mutableStateOf(" ") }
+                        modifier = Modifier.padding(10.dp)
+                    )
+                    if (!mensajeErrorNombre.isEmpty()) {
+                        Text(
+                            text = mensajeErrorNombre,
+                            color = Color.Red,
+                            modifier = Modifier.padding(4.dp)
+                        )
+                    }
+                    
                     OutlinedTextField(
                         value = estadoApellido,
                         onValueChange = { estadoApellido = it },
-                        label = { Text(text = "Nombre") },
-                        modifier = Modifier.padding(10.dp))
-                    Column { Image(
-                        painter = painterResource(id = R.drawable.android),
-                        contentDescription = "Android",
-                        modifier = Modifier.requiredSize(80.dp))
+                        label = { Text(text = "Apellido") },
+                        modifier = Modifier.padding(10.dp)
+                    )
+                    
+                    OutlinedTextField(
+                        value = estadoNickname,
+                        onValueChange = { 
+                            estadoNickname = it
+                            if (it.isNotBlank() && validacionRealizada) {
+                                mensajeErrorNickname = ""
+                            }
+                        },
+                        label = { Text(text = "Nickname") },
+                        modifier = Modifier.padding(10.dp)
+                    )
+                    if (!mensajeErrorNickname.isEmpty()) {
+                        Text(
+                            text = mensajeErrorNickname,
+                            color = Color.Red,
+                            modifier = Modifier.padding(4.dp)
+                        )
+                    }
+                    
+                    Column { 
+                        Image(
+                            painter = painterResource(id = R.drawable.android),
+                            contentDescription = "Android",
+                            modifier = Modifier.requiredSize(80.dp)
+                        )
                         Spacer(modifier.height(10.dp).width(10.dp))
-                        Button(onClick = {}) { Text("Change")} }}
+                        Button(onClick = {}) { Text("Change")} 
+                    }
+                }
             }
             Column {
-                Row { Image(
-                    painter = painterResource(id = R.drawable.camera),
-                    contentDescription = "Camara",
-                    modifier = Modifier.requiredSize(80.dp)
-                ) }
+                Row { 
+                    Image(
+                        painter = painterResource(id = R.drawable.camera),
+                        contentDescription = "Camara",
+                        modifier = Modifier.requiredSize(80.dp)
+                    ) 
+                }
                 Row {
-                    var estadoTelefono by remember{mutableStateOf(" ")}
                     OutlinedTextField(
                         value = estadoTelefono,
                         onValueChange = { estadoTelefono = it },
                         label = { Text(text = "Teléfono") },
-                        modifier = Modifier.padding(10.dp)) }
+                        modifier = Modifier.padding(10.dp)
+                    ) 
+                }
             }
             Column {
-                Row { Image(
-                    painter = painterResource(id = R.drawable.email),
-                    contentDescription = "Carta",
-                    modifier = Modifier.requiredSize(80.dp)
-                ) }
+                Row { 
+                    Image(
+                        painter = painterResource(id = R.drawable.email),
+                        contentDescription = "Carta",
+                        modifier = Modifier.requiredSize(80.dp)
+                    ) 
+                }
                 Row {
-                    var estadoEmail by remember{mutableStateOf(" ")}
                     OutlinedTextField(
                         value = estadoEmail,
                         onValueChange = { estadoEmail = it },
                         label = { Text(text = "Email")},
                         modifier = Modifier.padding(10.dp),
-                        placeholder = {Text(text = "Alcachofa")}) }
+                        placeholder = {Text(text = "Alcachofa")}
+                    ) 
+                }
             }
         }
-    }
 
+        OutlinedButtonExample("Agregar jugador nuevo.") {
+            validacionRealizada = true
+            mensajeFormularioValido = ""
+
+            mensajeErrorNombre = if (estadoNombre.isBlank()) {
+                "Este campo es obligatorio."
+            } else {
+                ""
+            }
+
+            mensajeErrorNickname = if (estadoNickname.isBlank()) {
+                "Este campo es obligatorio."
+            } else {
+                ""
+            }
+
+            if (estadoNombre.isNotBlank() && estadoNickname.isNotBlank()) {
+                mensajeFormularioValido = "Formulario válido. Nombre: $estadoNombre, NickName: $estadoNickname"
+            }
+        }
+
+        if (mensajeFormularioValido.isNotEmpty()) {
+            Text(
+                text = mensajeFormularioValido,
+                color = Color.Green,
+                modifier = Modifier.padding(4.dp)
+            )
+        }
+    }
 }
