@@ -59,7 +59,7 @@ fun MenuPrincipalVertical(navController : NavController, modifier: Modifier){
         )
         Spacer(modifier.height(20.dp))
         FilledButtonExample("Libros") { navController.navigate("Libros") }
-        FilledButtonExample("Usuarios") { }
+        FilledButtonExample("Usuarios") { navController.navigate("MasLibros")}
         FilledButtonExample("Preferences") { navController.navigate("Preferences") }
         FilledButtonExample("Nuevo Usuario") { navController.navigate("NuevoUsuario") }
 }}

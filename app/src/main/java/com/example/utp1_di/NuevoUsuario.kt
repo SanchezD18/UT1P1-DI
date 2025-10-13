@@ -55,7 +55,6 @@ fun NuevoUsuarioPrincipal(navController : NavController, modifier: Modifier){
 
 }
 
-
 @Composable
 fun NuevoUsuarioVertical(modifier: Modifier) {
     var estadoNombre by remember { mutableStateOf("") }
@@ -188,6 +187,7 @@ fun NuevoUsuarioVertical(modifier: Modifier) {
                             .clickable { expanded = true }
                             .fillMaxWidth()
                     )
+
                     DropdownMenu(
                         expanded = expanded,
                         onDismissRequest = { expanded = false },

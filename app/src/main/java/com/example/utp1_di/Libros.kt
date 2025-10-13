@@ -16,6 +16,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+
+
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -42,7 +44,7 @@ onCheckedChange:(Boolean)->Unit)
 
 @Composable
 fun getOptions(titles: List<String>): List<CheckInfo> {
-    return titles.map {
+    return titles.map { it ->
         var statusCheck by remember { mutableStateOf(false)
         }
         CheckInfo(
@@ -68,7 +70,7 @@ fun MyCheckBox(checkInfo:CheckInfo){
 fun LibrosPrincipal(navController : NavController, modifier: Modifier){
     val orientation = LocalConfiguration.current.orientation
     if (orientation == ORIENTATION_LANDSCAPE) {
-        LibrosHorizontal(navController, modifier)
+        LibrosHorizontal(modifier)
     } else {
         LibrosVertical(modifier)
     } }
@@ -134,7 +136,7 @@ fun LibrosVertical(modifier: Modifier){
 
 
 @Composable
-fun LibrosHorizontal(navController : NavController, modifier: Modifier){
+fun LibrosHorizontal(modifier: Modifier){
     val context = LocalContext.current
 
     Box(modifier
