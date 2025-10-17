@@ -1,4 +1,4 @@
-package com.example.utp1_di.ui.theme
+package com.example.utp1_di
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -16,8 +16,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.utp1_di.GoudyFont
-import com.example.utp1_di.R
 import kotlinx.coroutines.delay
 
 @Composable

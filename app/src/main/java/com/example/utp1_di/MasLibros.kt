@@ -1,7 +1,6 @@
-package com.example.utp1_di.ui.theme
+package com.example.utp1_di
 
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
-import android.health.connect.datatypes.units.Mass
 import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
@@ -17,16 +16,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,11 +40,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.utp1_di.GoudyFont
-import com.example.utp1_di.MyCheckBox
-import com.example.utp1_di.R
-import com.example.utp1_di.getOptions
-
 
 
 data class SuperHero(
@@ -107,8 +102,9 @@ fun getSuperHeroes() : List<SuperHero>{
 
 @Composable
 fun ItemHero(superhero:SuperHero){
-    Card(border = BorderStroke(2.dp, Color.Red), modifier =
-        Modifier.fillMaxWidth()){
+    Card(modifier =
+        Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFD0BCFF))){
             Row {
                 Column {
                     Image(
@@ -147,9 +143,10 @@ fun ItemHero(superhero:SuperHero){
 @Composable
 fun SuperHeroView(){
     LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp)){
+){
         items(getSuperHeroes()){superHero->
             ItemHero(superhero=superHero)
+            HorizontalDivider()
         }
     }
 }

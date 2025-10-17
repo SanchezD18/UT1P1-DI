@@ -11,8 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.utp1_di.ui.theme.MasLibrosPrincipal
-import com.example.utp1_di.ui.theme.SplashScreen
 import com.example.utp1_di.ui.theme.UTP1DITheme
 
 class MainActivity : ComponentActivity() {
