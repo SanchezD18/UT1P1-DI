@@ -162,7 +162,7 @@ fun PreferencesVertical(modifier: Modifier){
             Text(
                 modifier = modifier,
                 text = "Plataformas:",
-                fontSize = 20.sp,
+                fontSize = 20.sp
             )
             Row(
             horizontalArrangement = Arrangement.spacedBy(6.dp)

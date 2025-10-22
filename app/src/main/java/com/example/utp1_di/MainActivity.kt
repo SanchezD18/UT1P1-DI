@@ -54,8 +54,8 @@ class MainActivity : ComponentActivity() {
                                 modifier = Modifier.padding(innerPadding)
                             )
                         }
-                        composable("MasLibros") {
-                            MasLibrosPrincipal(
+                        composable("About") {
+                            AboutPrincipal(
                                 navController,
                                 modifier = Modifier.padding(innerPadding)
                             )

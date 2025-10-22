@@ -3,9 +3,7 @@ package com.example.utp1_di
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.widget.Toast
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -23,7 +22,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -42,94 +40,98 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 
-data class SuperHero(
-    var superheroName: String,
-    var realName: String,
-    var publisher: String,
+data class LibrosItem(
+    var itemAutor: String,
+    var itemObra: String,
+    var itemFechaNacimiento: String,
     @DrawableRes var photo: Int
 )
 
-fun getSuperHeroes() : List<SuperHero>{
+fun getLibrosItem() : List<LibrosItem>{
     return listOf(
-        SuperHero(
-            "Spider-man",
-            "PeterParker",
-            "Marvel",
-            R.drawable.image1
+        LibrosItem(
+            "Miguel de Cervantes",
+            "El quijote",
+            "29/09/1547",
+            R.drawable.cervantes
         ),
-        SuperHero(
-            "DareDevil",
-            "MattMurdock",
-            "Marvel",
-            R.drawable.image2
+        LibrosItem(
+            "Charles Dickens",
+            "Oliver Twist",
+            "07/02/1812",
+            R.drawable.dickens
         ),
-        SuperHero(
-            "GhostSpider",
-            "GwenStacy",
-            "Marvel",
-            R.drawable.image3
+        LibrosItem(
+            "John Ronald Reuel Tolkien",
+            "El señor de los anillos",
+            "03/01/1892",
+            R.drawable.tolkien
         ),
-        SuperHero(
-            "GhostSpider",
-            "GwenStacy",
-            "Marvel",
-            R.drawable.image4
+        LibrosItem(
+            "Joanne Rowling",
+            "Harry Potter",
+            "31/06/1965",
+            R.drawable.rowling
         ),
-        SuperHero(
-            "GhostSpider",
-            "GwenStacy",
-            "Marvel",
-            R.drawable.image5
+        LibrosItem(
+            "Agatha Christie",
+            "Asesinato en el Orient Express",
+            "15/09/1890",
+            R.drawable.agatha
         ),
-        SuperHero(
-            "GhostSpider",
-            "GwenStacy",
-            "Marvel",
-            R.drawable.image6
+        LibrosItem(
+            "William Shakespeare",
+            "Romeo y Julieta",
+            "??/04/1964",
+            R.drawable.shakespeare
         ),
-        SuperHero(
-            "GhostSpider",
-            "GwenStacy",
-            "Marvel",
-            R.drawable.image7
+        LibrosItem(
+            "Eiichiro Oda",
+            "One Piece",
+            "01/01/1975",
+            R.drawable.oda
         ),
-        SuperHero(
-            "GhostSpider",
-            "GwenStacy",
-            "Marvel",
-            R.drawable.image8
+        LibrosItem(
+            "Dan Brown",
+            "El código Da Vinci",
+            "22/06/1964",
+            R.drawable.brownjpeg
         ))}
 
 @Composable
-fun ItemHero(superhero:SuperHero){
+fun ItemAutor(autor:LibrosItem){
+    val context = LocalContext.current
     Card(modifier =
         Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFD0BCFF))){
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF8D0FF)),
+        onClick = {
+                Toast.makeText(context, autor.itemAutor, Toast.LENGTH_LONG).show()
+        }) {
             Row {
                 Column {
                     Image(
-                        painter = painterResource(id = superhero.photo),
-                        contentDescription = "SuperHeroavatar",
+                        painter = painterResource(id = autor.photo),
+                        contentDescription = "Cara Autores",
                         modifier = Modifier
-                            .height(100.dp),
+                            .size(100.dp),
                         contentScale = ContentScale.Inside
                     )
                 }
 
                 Column {
                     Text(
-                        text = superhero.superheroName,
+                        text = autor.itemAutor,
                         modifier =
                             Modifier.align(Alignment.End),
                     )
                     Text(
-                        text = superhero.realName,
+                        text = autor.itemObra,
                         modifier =
                             Modifier.align(Alignment.End),
                         fontSize = 12.sp
                     )
                     Text(
-                        text = superhero.publisher,
+                        text = autor.itemFechaNacimiento,
                         modifier =
                             Modifier.align(Alignment.End),
                         fontSize = 10.sp
@@ -141,36 +143,35 @@ fun ItemHero(superhero:SuperHero){
 }
 
 @Composable
-fun SuperHeroView(){
+fun AutoresView(){
     LazyColumn(
 ){
-        items(getSuperHeroes()){superHero->
-            ItemHero(superhero=superHero)
+        items(getLibrosItem()){ superHero->
+            ItemAutor(autor=superHero)
             HorizontalDivider()
         }
     }
 }
 
 @Composable
-fun MasLibrosPrincipal(navController : NavController, modifier: Modifier){
+fun AboutPrincipal(navController : NavController, modifier: Modifier){
     val orientation = LocalConfiguration.current.orientation
     if (orientation == ORIENTATION_LANDSCAPE) {
-        MasLibrosHorizontal(modifier)
+        AboutHorizontal(modifier)
     } else {
-        MasLibrosVertical(modifier)
+        AboutVertical(modifier)
     } }
 
 
 @Composable
-fun MasLibrosVertical(modifier: Modifier){
-    val context = LocalContext.current
-    SuperHeroView()
+fun AboutVertical(modifier: Modifier){
+    AutoresView()
 }
 
 
 
 @Composable
-fun MasLibrosHorizontal(modifier: Modifier){
+fun AboutHorizontal(modifier: Modifier){
     val context = LocalContext.current
 
     Box(modifier
