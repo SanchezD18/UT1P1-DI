@@ -10,14 +10,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -30,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -41,9 +41,9 @@ import androidx.navigation.NavController
 
 
 data class LibrosItem(
-    var itemAutor: String,
-    var itemObra: String,
-    var itemFechaNacimiento: String,
+    var nombre: String,
+    var mejorObra: String,
+    var nacimiento: String,
     @DrawableRes var photo: Int
 )
 
@@ -102,39 +102,41 @@ fun getLibrosItem() : List<LibrosItem>{
 fun ItemAutor(autor:LibrosItem){
     val context = LocalContext.current
     Card(modifier =
-        Modifier.fillMaxWidth(),
+        Modifier.fillMaxWidth()
+            .size(150.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFFF8D0FF)),
         onClick = {
-                Toast.makeText(context, autor.itemAutor, Toast.LENGTH_LONG).show()
+                Toast.makeText(context, autor.nombre, Toast.LENGTH_LONG).show()
         }) {
-            Row {
-                Column {
+            Row{
                     Image(
                         painter = painterResource(id = autor.photo),
                         contentDescription = "Cara Autores",
                         modifier = Modifier
-                            .size(100.dp),
-                        contentScale = ContentScale.Inside
+                            .size(150.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Inside,
                     )
-                }
 
-                Column {
+                Column(modifier = Modifier
+                    .weight(1f)){
+                    Spacer(modifier = Modifier.size(40.dp))
                     Text(
-                        text = autor.itemAutor,
+                        text = autor.nombre,
                         modifier =
-                            Modifier.align(Alignment.End),
+                            Modifier.align(Alignment.CenterHorizontally),
                     )
                     Text(
-                        text = autor.itemObra,
+                        text = autor.mejorObra,
                         modifier =
-                            Modifier.align(Alignment.End),
+                            Modifier.align(Alignment.CenterHorizontally),
+                        fontSize = 14.sp
+                    )
+                    Text(
+                        text = autor.nacimiento,
+                        modifier =
+                            Modifier.align(Alignment.CenterHorizontally),
                         fontSize = 12.sp
-                    )
-                    Text(
-                        text = autor.itemFechaNacimiento,
-                        modifier =
-                            Modifier.align(Alignment.End),
-                        fontSize = 10.sp
 
                     )
                 }
